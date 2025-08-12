@@ -1,5 +1,8 @@
 # Changelog
 
+# 2.0.10
+- Added `trustDeviceTiming` configuration option for backend to trust the device timing
+
 # 2.0.9
 - support Typescript projects by eliminating react-native import errors.
 

@@ -46,6 +46,7 @@ interface SetupOption {
   suspendReporting: any;
   dropBeaconReporting: boolean;
   rateLimits: any;
+  trustDeviceTiming: boolean;
   enableW3CHeaders: boolean;
 }
 

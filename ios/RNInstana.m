@@ -19,6 +19,7 @@ static NSString *const kUsiRefreshTimeIntervalInHrs = @"usiRefreshTimeIntervalIn
 static NSString *const kQueryTrackedDomainList = @"queryTrackedDomainList";
 static NSString *const kDropBeaconReporting = @"dropBeaconReporting";
 static NSString *const kRateLimits = @"rateLimits";
+static NSString *const kEnableTrustDeviceTiming = @"trustDeviceTiming";
 static NSString *const kEnableW3CHeaders = @"enableW3CHeaders";
 
 // Custom Event OptionKeys
@@ -87,6 +88,11 @@ RCT_EXPORT_METHOD(setup:(nonnull NSString *)key reportingUrl:(nonnull NSString *
              rateLimits = [self rateLimitTypeFromObject:(options[kRateLimits])];
         }
 
+        BOOL enableTrustDeviceTiming = NO;
+        if ([[options allKeys] containsObject: kEnableTrustDeviceTiming]) {
+            enableTrustDeviceTiming = [options[kEnableTrustDeviceTiming] boolValue];
+        }
+
         BOOL enableW3CHeaders = NO;
         if ([[options allKeys] containsObject: kEnableW3CHeaders]) {
             enableW3CHeaders = [options[kEnableW3CHeaders] boolValue];
@@ -111,10 +117,10 @@ RCT_EXPORT_METHOD(setup:(nonnull NSString *)key reportingUrl:(nonnull NSString *
                                     dropBeaconReporting: dropBeaconReporting
                                     rateLimits: rateLimits
                                     perfConfig: performanceConfig
-                                    trustDeviceTiming: false
+                                    trustDeviceTiming: enableTrustDeviceTiming
                                     enableW3CHeaders: enableW3CHeaders];
 
-        HybridAgentOptions* hybridOptions = [[HybridAgentOptions alloc] initWithId: @"r" version: @"2.0.9"];
+        HybridAgentOptions* hybridOptions = [[HybridAgentOptions alloc] initWithId: @"r" version: @"2.0.10"];
 
         #pragma clang diagnostic ignored "-Wunused-result"
         (void)[Instana setupInternalWithKey: key

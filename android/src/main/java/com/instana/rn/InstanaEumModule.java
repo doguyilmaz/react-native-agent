@@ -61,6 +61,7 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
     private static final String SETUPOPTIONS_QUERY_TRACKED_DOMAIN_LIST = "queryTrackedDomainList";
     private static final String SETUPOPTIONS_DROP_BEACON_REPORTING = "dropBeaconReporting";
     private static final String SETUPOPTIONS_RATE_LIMITS = "rateLimits";
+    private static final String SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING = "trustDeviceTiming";
     private static final String SETUPOPTIONS_ENABLE_W3CHEADERS = "enableW3CHeaders";
     
 
@@ -96,6 +97,8 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
         constants.put(SETUPOPTIONS_QUERY_TRACKED_DOMAIN_LIST, SETUPOPTIONS_QUERY_TRACKED_DOMAIN_LIST);
         constants.put(SETUPOPTIONS_DROP_BEACON_REPORTING, SETUPOPTIONS_DROP_BEACON_REPORTING);
         constants.put(SETUPOPTIONS_RATE_LIMITS, SETUPOPTIONS_RATE_LIMITS);
+        constants.put(SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING, SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING);
+        constants.put(SETUPOPTIONS_ENABLE_W3CHEADERS, SETUPOPTIONS_ENABLE_W3CHEADERS);
         return constants;
     }
 
@@ -164,6 +167,10 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
                 int rateLimitsInt = (int) options.getInt(SETUPOPTIONS_RATE_LIMITS);
                 config.setRateLimits(rateLimitsFromInt(rateLimitsInt));
             }
+            if (options.hasKey(SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING)) {
+                boolean enableTrustDeviceTiming = (boolean) options.getBoolean(SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING);
+                config.setTrustDeviceTiming(enableTrustDeviceTiming);
+            }
             if (options.hasKey(SETUPOPTIONS_ENABLE_W3CHEADERS)) {
                boolean enableW3CHeaders = (boolean) options.getBoolean(SETUPOPTIONS_ENABLE_W3CHEADERS);
                config.setEnableW3CHeaders(enableW3CHeaders);
@@ -172,7 +179,7 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
         PerformanceMonitorConfig perfConfig = new PerformanceMonitorConfig(3000L, 15, false, false, false);
         config.setPerformanceMonitorConfig(perfConfig);
 
-        HybridAgentOptions hybridAgentOptions = new HybridAgentOptions("r", "2.0.9");
+        HybridAgentOptions hybridAgentOptions = new HybridAgentOptions("r", "2.0.10");
         Instana.setupInternal(application, config, hybridAgentOptions);
     }
 
