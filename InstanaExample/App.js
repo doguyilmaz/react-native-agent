@@ -21,6 +21,7 @@ class App extends Component {
     // options.rateLimits = 1;
     // options.trustDeviceTiming = true;
     // options.enableW3CHeaders = true;
+    options.httpCaptureConfig = Instana.httpCaptureConfig.AUTO;
     Instana.setup('<your key>', '<your reporting url>', options);
     Instana.setUserID('123456');
     Instana.setUserEmail('nils@example.com');

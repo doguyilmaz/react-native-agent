@@ -1,5 +1,8 @@
 # Changelog
 
+# 2.0.11
+- Add support to enable and disable httpCaptureConfig
+
 # 2.0.10
 - Added `trustDeviceTiming` configuration option for backend to trust the device timing
 

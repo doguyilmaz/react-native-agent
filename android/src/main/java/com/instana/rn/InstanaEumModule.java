@@ -63,7 +63,9 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
     private static final String SETUPOPTIONS_RATE_LIMITS = "rateLimits";
     private static final String SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING = "trustDeviceTiming";
     private static final String SETUPOPTIONS_ENABLE_W3CHEADERS = "enableW3CHeaders";
-    
+    private static final String SETUPOPTIONS_HTTP_CAPTURE_CONFIG = "httpCaptureConfig";
+    private static final String SETUPOPTIONS_HTTP_CAPTURE_CONFIG_AUTO = "AUTO";
+    private static final String SETUPOPTIONS_HTTP_CAPTURE_CONFIG_NONE = "NONE";
 
     public InstanaEumModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -83,6 +85,11 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
         androidSuspendReport.put(SETUPOPTIONS_SUSPEND_REPORTING_NEVER, SETUPOPTIONS_SUSPEND_REPORTING_NEVER);
         androidSuspendReport.put(SETUPOPTIONS_SUSPEND_REPORTING_LOW_BATTERY, SETUPOPTIONS_SUSPEND_REPORTING_LOW_BATTERY);
         androidSuspendReport.put(SETUPOPTIONS_SUSPEND_REPORTING_CELLULAR_CONNECTION, SETUPOPTIONS_SUSPEND_REPORTING_CELLULAR_CONNECTION);
+
+        final Map<String, String> httpCaptureConfig = new HashMap<>();
+        httpCaptureConfig.put(SETUPOPTIONS_HTTP_CAPTURE_CONFIG_AUTO, SETUPOPTIONS_HTTP_CAPTURE_CONFIG_AUTO);
+        httpCaptureConfig.put(SETUPOPTIONS_HTTP_CAPTURE_CONFIG_NONE, SETUPOPTIONS_HTTP_CAPTURE_CONFIG_NONE);
+
         constants.put(CUSTOMEVENT_START_TIME, CUSTOMEVENT_START_TIME);
         constants.put(CUSTOMEVENT_DURATION, CUSTOMEVENT_DURATION);
         constants.put(CUSTOMEVENT_VIEW_NAME, CUSTOMEVENT_VIEW_NAME);
@@ -99,6 +106,7 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
         constants.put(SETUPOPTIONS_RATE_LIMITS, SETUPOPTIONS_RATE_LIMITS);
         constants.put(SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING, SETUPOPTIONS_ENABLE_TRUSTDEVICETIMING);
         constants.put(SETUPOPTIONS_ENABLE_W3CHEADERS, SETUPOPTIONS_ENABLE_W3CHEADERS);
+        constants.put(SETUPOPTIONS_HTTP_CAPTURE_CONFIG, httpCaptureConfig);
         return constants;
     }
 
@@ -137,7 +145,7 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
     }
 
     private void doSetup(Application application, String key, String reportingUrl, @Nullable ReadableMap options) {
-        InstanaConfig config = new InstanaConfig(key, reportingUrl, HTTPCaptureConfig.AUTO, getSuspendReportingType(options));
+        InstanaConfig config = new InstanaConfig(key, reportingUrl, getHttpCaptureConfig(options), getSuspendReportingType(options));
         if (options != null) {
             if (options.hasKey(SETUPOPTIONS_COLLECTION_ENABLED)) {
                 boolean collectionEnabled = (boolean) options.getBoolean(SETUPOPTIONS_COLLECTION_ENABLED);
@@ -179,7 +187,7 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
         PerformanceMonitorConfig perfConfig = new PerformanceMonitorConfig(3000L, 15, false, false, false);
         config.setPerformanceMonitorConfig(perfConfig);
 
-        HybridAgentOptions hybridAgentOptions = new HybridAgentOptions("r", "2.0.10");
+        HybridAgentOptions hybridAgentOptions = new HybridAgentOptions("r", "2.0.11");
         Instana.setupInternal(application, config, hybridAgentOptions);
     }
 
@@ -202,6 +210,17 @@ public class InstanaEumModule extends ReactContextBaseJavaModule implements Life
          return SuspendReportingType.CELLULAR_CONNECTION;
       }
       return SuspendReportingType.LOW_BATTERY;
+    }
+
+    private  HTTPCaptureConfig getHttpCaptureConfig(@Nullable ReadableMap options)
+    {
+      if(options.hasKey(SETUPOPTIONS_HTTP_CAPTURE_CONFIG)){
+        if(SETUPOPTIONS_HTTP_CAPTURE_CONFIG_AUTO.equals(options.getString(SETUPOPTIONS_HTTP_CAPTURE_CONFIG)))
+         return HTTPCaptureConfig.AUTO;
+        if(SETUPOPTIONS_HTTP_CAPTURE_CONFIG_NONE.equals(options.getString(SETUPOPTIONS_HTTP_CAPTURE_CONFIG)))
+         return HTTPCaptureConfig.NONE;
+        }
+        return HTTPCaptureConfig.AUTO;
     }
 
     @ReactMethod

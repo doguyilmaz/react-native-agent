@@ -21,6 +21,8 @@ static NSString *const kDropBeaconReporting = @"dropBeaconReporting";
 static NSString *const kRateLimits = @"rateLimits";
 static NSString *const kEnableTrustDeviceTiming = @"trustDeviceTiming";
 static NSString *const kEnableW3CHeaders = @"enableW3CHeaders";
+static NSString *const kAutomatic = @"AUTO";
+static NSString *const kNone = @"NONE";
 
 // Custom Event OptionKeys
 static NSString *const kCustomEventStartTimeKey = @"startTime";
@@ -34,6 +36,16 @@ static NSString *const kCustomMetric = @"customMetric";
 
 RCT_EXPORT_MODULE(Instana)
 
+- (NSDictionary *)constantsToExport
+{
+  return @{
+    @"httpCaptureConfig": @{
+        @"AUTO": @"AUTO",
+        @"NONE": @"NONE"
+    }
+  };
+}
+
 RCT_EXPORT_METHOD(setup:(nonnull NSString *)key reportingUrl:(nonnull NSString *)reportingUrl options:(NSDictionary *)options)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -44,7 +56,7 @@ RCT_EXPORT_METHOD(setup:(nonnull NSString *)key reportingUrl:(nonnull NSString *
 
         HTTPCaptureConfig httpCapture = HTTPCaptureConfigAutomatic;
         if ([[options allKeys] containsObject: kHttpCaptureConfig]) {
-            httpCapture = [options[kHttpCaptureConfig] intValue];
+          httpCapture = [self httpCaptureConfigObject:(options[kHttpCaptureConfig])];
         }
 
         BOOL crashReporting = NO;
@@ -120,7 +132,7 @@ RCT_EXPORT_METHOD(setup:(nonnull NSString *)key reportingUrl:(nonnull NSString *
                                     trustDeviceTiming: enableTrustDeviceTiming
                                     enableW3CHeaders: enableW3CHeaders];
 
-        HybridAgentOptions* hybridOptions = [[HybridAgentOptions alloc] initWithId: @"r" version: @"2.0.10"];
+        HybridAgentOptions* hybridOptions = [[HybridAgentOptions alloc] initWithId: @"r" version: @"2.0.11"];
 
         #pragma clang diagnostic ignored "-Wunused-result"
         (void)[Instana setupInternalWithKey: key
@@ -145,6 +157,23 @@ RCT_EXPORT_METHOD(setup:(nonnull NSString *)key reportingUrl:(nonnull NSString *
         default:
             return RateLimitsDEFAULT_LIMITS;
     }
+}
+
+- (HTTPCaptureConfig)httpCaptureConfigObject:(id)value {
+    
+    if (![value isKindOfClass:[NSString class]]) {
+        return HTTPCaptureConfigAutomatic;
+    }
+
+    NSString *stringValue = (NSString *)value;
+    if ([stringValue isEqualToString:@"AUTO"]){
+        return HTTPCaptureConfigAutomatic;
+    }
+    
+    if ([stringValue isEqualToString:@"NONE"]){
+         return HTTPCaptureConfigNone;
+    }
+    return HTTPCaptureConfigAutomatic;
 }
 
 RCT_EXPORT_METHOD(setView:(nonnull NSString *)viewName)
