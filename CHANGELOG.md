@@ -2,9 +2,8 @@
 
 # 2.0.11
 - Add support to enable and disable httpCaptureConfig
-
-# 2.0.10
 - Added `trustDeviceTiming` configuration option for backend to trust the device timing
+- Upgrade android-agent to 6.2.5
 
 # 2.0.9
 - support Typescript projects by eliminating react-native import errors.
