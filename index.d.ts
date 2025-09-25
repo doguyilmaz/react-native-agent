@@ -36,8 +36,9 @@ export enum RateLimits {
 export interface InstanaInterface {
   /**
    * Initialize Instana monitoring with configuration options
+   * Note: options parameter is required by the native implementation
    */
-  setup(key: string, reportingUrl: string, options?: SetupOptions): void;
+  setup(key: string, reportingUrl: string, options: SetupOptions): void;
 
   /**
    * Enable or disable data collection
